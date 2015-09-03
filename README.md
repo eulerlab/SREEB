@@ -68,7 +68,6 @@ The controller can reply to three ways: by acknowledging the command/request (``
   with ``x1,..`` servo port index (1...8), ``y1,..``values. For output pins, 0=low, 1=high, and for 
   servo pins, 0..255 as angular position.  
   
-    
-
-  * Clear all function entries
-    >CLR;
+- Clear all settings.
+- 
+  ``>CLR;``
