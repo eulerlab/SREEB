@@ -69,5 +69,5 @@ The controller can reply to three ways: by acknowledging the command/request (``
   servo pins, 0..255 as angular position.  
   
 - Clear all settings.
-- 
+ 
   ``>CLR;``
