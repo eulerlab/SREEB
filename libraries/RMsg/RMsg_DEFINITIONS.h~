@@ -76,9 +76,8 @@
 #define TOK_SDV                7
 #define TOK_SDT                8
 #define TOK_CLR				   9
-#define TOK_I2W                10
-#define TOK_I2R                11
-#define TOK_LastIndex          11
+#define TOK_I2C                10
+#define TOK_LastIndex          10
 
 /*--------------------------------------------------------------------------------
   Status codes

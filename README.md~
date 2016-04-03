@@ -72,15 +72,15 @@ The controller can reply to three ways: by acknowledging the command/request (``
 
    ``>I2W A=x, B=y, W=z;``
    
-   with ``x`` being the address to be written to, ``y`` the value to be written and
-   ``z`` the delay after writingm the value.
+   with x being the address to be written to, y the value to be written and
+   z the delay after writingm the value.
 
 - Read data via I2C protocol.
 
    ``>I2R A=x, B=y, W=z;``
    
-   with ``x`` being the address to be written to, ``y`` the number of bytes to be read
-   and ``z`` the delay after reading a byte.
+   with x being the address to be written to, y the number of bytes to be read
+   and z the delay after reading a byte.
 
 - Clear all settings.
  

@@ -433,7 +433,7 @@ bool  RMsgClass::checkMsg (Msg_t* msg, bool asCmd)
                 case TOK_I2W:
 			res = (((*msg).nParams == 3) &&
 			       ((*msg).paramCh[0] == 'A') && 
-			       ((*msg).paramCh[1] == 'B') &&
+			       ((*msg).paramCh[1] == 'V') &&
 			       ((*msg).paramCh[2] == 'W') &&
 			       ((*msg).nData[0] > 0) &&
 			       ((*msg).nData[1] > 0) &&
