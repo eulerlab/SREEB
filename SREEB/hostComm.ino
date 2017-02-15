@@ -105,9 +105,12 @@ boolean COM_handleMsg (Msg_t* msg)
 // Handles some messages, can be called by the main loop to deal with standard
 // messages. The result reflects if the message was not/could not be handled.
 {
-  boolean res   = true;
-  byte    nErrs = 0;
+  boolean res     = true;
+  boolean replied = false;
+  byte    nErrs   = 0;
   int     p1, p2, p3, pin, mode, j, val;
+  int     dataOut[2];
+
   
   switch ((*msg).tok) {
     case TOK_REM :
@@ -238,24 +241,28 @@ boolean COM_handleMsg (Msg_t* msg)
           digitalWrite(RobotCS.getArduinoPin(p3), val);
       }
       break;
+      
     case TOK_I2W :        
-        Wire.beginTransmission((*msg).data[0][0]);
-        Wire.write((*msg).data[1][0]);
-        Wire.endTransmission();
-        delay((*msg).data[2][0]);
-        break; 
-    case TOK_I2R : 
-        Wire.requestFrom((*msg).data[0][0], (*msg).data[1][0]);
-        while (Wire.available()==0){}
-        for (j=0;j<(*msg).data[1][0];j+=1){
-          c1 = Wire.read();
-          //c1=c1*0.125;  
-          Serial.print("byte: ");
-          Serial.println(c1);
-          //RMsg.sendMsg((*msg),);
-          delay((*msg).data[2][0]);}
+      Wire.beginTransmission((*msg).data[0][0]);
+      Wire.write((*msg).data[1][0]);
+      Wire.endTransmission();
+      delay((*msg).data[2][0]);
+      break; 
         
+    case TOK_I2R : 
+      Wire.requestFrom((*msg).data[0][0], (*msg).data[1][0]);
+      while (Wire.available()==0){}
+      for (j=0;j<(*msg).data[1][0];j+=1){
+        dataOut[j] = Wire.read();
+        Serial.println(dataOut[j], HEX);
+      }
+      RMsg.beginMsg(TOK_I2R);
+      RMsg.appendDataToMsg("D", MSG_DecFormatChr, 2, dataOut);
+      RMsg.sendMsg();
+      delay((*msg).data[2][0]);
+      replied = true;
       break;
+        
     case TOK_CLR :
       // Clear all function entries
       // >CLR
@@ -271,9 +278,8 @@ boolean COM_handleMsg (Msg_t* msg)
   }
   if(nErrs > 0)
     RMsg.sendConfirmMsg((*msg).tok, ERR_AtLeastOneInvalidParam, nErrs);
-  else {
+  if(!replied)
     RMsg.sendConfirmMsg((*msg).tok, ERR_None, 0);      
-  }
   return res; 
 }  
 
