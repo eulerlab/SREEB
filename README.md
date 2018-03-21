@@ -33,7 +33,7 @@ The controller can reply to three ways: by acknowledging the command/request (``
   
   with ``x``, command index
   
-####Currently available commands:
+#### Currently available commands:
 
 - Information about software version (V) and free space in SRAM (M) in bytes
 
