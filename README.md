@@ -33,7 +33,7 @@ The controller can reply to three ways: by acknowledging the command/request (``
   
   with ``x``, command index
   
-#### Currently available commands:
+####Currently available commands:
 
 - Information about software version (V) and free space in SRAM (M) in bytes
 
@@ -68,20 +68,6 @@ The controller can reply to three ways: by acknowledging the command/request (``
   with ``x1,..`` servo port index (1...8), ``y1,..``values. For output pins, 0=low, 1=high, and for 
   servo pins, 0..255 as angular position.  
   
-- Write data via I2C protocol.
-
-   ``>I2W A=x, B=y, W=z;``
-   
-   with ``x`` being the address to be written to, ``y`` the value to be written and
-   ``z`` the delay after writingm the value.
-
-- Read data via I2C protocol.
-
-   ``>I2R A=x, B=y, W=z;``
-   
-   with ``x`` being the address to be written to, ``y`` the number of bytes to be read
-   and ``z`` the delay after reading a byte.
-
 - Clear all settings.
  
   ``>CLR;``

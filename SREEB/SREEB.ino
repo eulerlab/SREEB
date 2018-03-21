@@ -7,14 +7,12 @@
   Author:   Copyright (c) 2015 Thomas Euler, CIN University of Tübingen. 
             All right reserved.
   History:  v0.6 (2015-08-31) first release
-            v0.7 (2016-02-16) Added routines to read i2c data by Andre M. Chagas
+        
   --------------------------------------------------------------------------------*/
 #include <RString.h>
 #include <RMsg.h>
-#include <Wire.h>
 #include "Servo.h"
 #include "RobotCS.h"
-
 
 //--------------------------------------------------------------------------------
 #define  SerHost           Serial
@@ -35,7 +33,7 @@
   --------------------------------------------------------------------------------*/
 boolean         isReady;
 int             val, p, pOut;
-int          c1;
+
 // Related to messaging
 //
 RMsgClass       RMsg = RMsgClass();
@@ -66,7 +64,6 @@ void setup()
   // Initialize modules
   //
   COM_init();
-  I2C_init();
   // ...
   
   isReady = true;

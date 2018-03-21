@@ -35,7 +35,7 @@ RMsgClass::RMsgClass ()
   msgOutBuf[0]  = '\0';
   iMsgOutBuf    = 0;
   isMsgStarted  = false;
-  isClient		  = true;
+  isClient      = true;
   chStartClient = MSG_StartChr_Client;
   chStartHost   = MSG_StartChr_Host;
   cmdStream     = &Serial;
@@ -47,22 +47,22 @@ void  RMsgClass::setStream (Stream *StreamCmd, Stream *StreamDebug)
 // Set input/output stream and, if required, an extra output stream for debug
 // messages (currently only messages of the REM-type)
 {
-	cmdStream = StreamCmd;
-	if (StreamDebug != NULL)
-		debugStream  = StreamDebug;
-	else
-		debugStream  = cmdStream;
+  cmdStream = StreamCmd;
+  if (StreamDebug != NULL)
+    debugStream  = StreamDebug;
+  else
+    debugStream  = cmdStream;
 }
 
 //--------------------------------------------------------------------------------
 void  RMsgClass::setIsHost(bool _isHost)
 // Set if client or host role
 {
-	isClient	= !_isHost;
-	if (!isClient) {
-		chStartClient = MSG_StartChr_Host;
-		chStartHost   = MSG_StartChr_Client;
-	}
+  isClient  = !_isHost;
+  if (!isClient) {
+    chStartClient = MSG_StartChr_Host;
+    chStartHost   = MSG_StartChr_Client;
+  }
 }
 
 //--------------------------------------------------------------------------------
@@ -193,36 +193,36 @@ char* RMsgClass::composeRemMsg (int strCode)
 //--------------------------------------------------------------------------------
 void RMsgClass::beginRemMsg ()
 {
-	(*debugStream).print(chStartClient);
-	(*debugStream).print(msgTokens[TOK_REM]);
-	(*debugStream).print(MSG_SpacerChr);
+  (*debugStream).print(chStartClient);
+  (*debugStream).print(msgTokens[TOK_REM]);
+  (*debugStream).print(MSG_SpacerChr);
 }
 
 void RMsgClass::appendStrToRemMsg (char *s)
 {
-	(*debugStream).print(s);
+  (*debugStream).print(s);
 }
 
 void RMsgClass::sendRemMsg ()
 {
-	(*debugStream).println(MSG_EndChr);
+  (*debugStream).println(MSG_EndChr);
 }
 
 //--------------------------------------------------------------------------------
 void RMsgClass::sendMsg()
 {
   char* msgStr = finalizeMsg();
-	if (msgStr != NULL) {
-		(*cmdStream).println(msgStr);
-	}
+  if (msgStr != NULL) {
+   (*cmdStream).println(msgStr);
+  }
 }
 
 void RMsgClass::sendMsg(Msg_t msg)
 {
-	char* msgStr = convertMsgToStr(msg);
-	if (msgStr != NULL) {
-		(*cmdStream).println(msgStr);
-	}
+  char* msgStr = convertMsgToStr(msg);
+  if (msgStr != NULL) {
+    (*cmdStream).println(msgStr);
+  }
 }
 
 //--------------------------------------------------------------------------------
@@ -230,51 +230,51 @@ void RMsgClass::sendConfirmMsg (token_t tok, int errCode, int errValue)
 // Depending on error code, it sends an error message or an acknowledgement 
 // to the host
 {
-	int   data[2] = {byte(tok), 0};
-	char* msgStr;
+  int   data[2] = {byte(tok), 0};
+  char* msgStr;
 
-	if (errCode == ERR_None) {
-		beginMsg(TOK_ACK);
-		appendDataToMsg("C", MSG_DecFormatChr, 1, data);
-	}
-	else {
-		beginMsg(TOK_ERR);
-		appendDataToMsg("C", MSG_DecFormatChr, 1, data);
-		data[0] = errCode;
-		data[1] = errValue;
-		appendDataToMsg("E", MSG_DecFormatChr, 2, data);
-	}
-	msgStr = finalizeMsg();
-	if (msgStr != NULL) {
-		(*cmdStream).println(msgStr);
-	}
+  if (errCode == ERR_None) {
+    beginMsg(TOK_ACK);
+    appendDataToMsg("C", MSG_DecFormatChr, 1, data);
+  }
+  else {
+    beginMsg(TOK_ERR);
+    appendDataToMsg("C", MSG_DecFormatChr, 1, data);
+    data[0] = errCode;
+    data[1] = errValue;
+    appendDataToMsg("E", MSG_DecFormatChr, 2, data);
+  }
+  msgStr = finalizeMsg();
+  if (msgStr != NULL) {
+    (*cmdStream).println(msgStr);
+  }
 }
 
 //--------------------------------------------------------------------------------
 void RMsgClass::sendRemMsg (int strCode)
 {
-	(*debugStream).println(composeRemMsg(strCode));
+  (*debugStream).println(composeRemMsg(strCode));
 }
 
 void RMsgClass::sendRemMsg(char *s)
 {
-	(*debugStream).print(chStartClient);
-	(*debugStream).print("REM ");
-	(*debugStream).print(s);
-	(*debugStream).println(MSG_EndChr);
+  (*debugStream).print(chStartClient);
+  (*debugStream).print("REM ");
+  (*debugStream).print(s);
+  (*debugStream).println(MSG_EndChr);
 }
 
 //--------------------------------------------------------------------------------
 void RMsgClass::sendVerMsg (int ver, int freeRAM)
 {
-	int data[1];
+  int data[1];
 
-	beginMsg(TOK_VER);
-	data[0] = ver;
-	appendDataToMsg("V", MSG_DecFormatChr, 1, data);
-	data[0] = freeRAM;
-	appendDataToMsg("M", MSG_DecFormatChr, 1, data);
-	sendMsg();
+  beginMsg(TOK_VER);
+  data[0] = ver;
+  appendDataToMsg("V", MSG_DecFormatChr, 1, data);
+  data[0] = freeRAM;
+  appendDataToMsg("M", MSG_DecFormatChr, 1, data);
+  sendMsg();
 }
 
 //--------------------------------------------------------------------------------
@@ -290,133 +290,133 @@ token_t RMsgClass::readMsgFromStream (Msg_t* msg)
 // For message structure see class RMsg
 //
 {
-	char    ch;
-	char    *pTok, *pCh, *pBuf, *pErrCh;
+  char    ch;
+  char    *pTok, *pCh, *pBuf, *pErrCh;
 //char    Buf[MSG_MaxInLen];
 //int     nBuf;
-	byte    i;
-	int     j;
-	int     convRes;
-	boolean isMsgComplete = false;
+  byte    i;
+  int     j;
+  int     convRes;
+  boolean isMsgComplete = false;
 
-	if ((msg == NULL) || (!(*cmdStream).available()))
-		return TOK_NONE;
+  if ((msg == NULL) || (!(*cmdStream).available()))
+    return TOK_NONE;
 
-	// Initialize message
-	//
-	(*msg).tok = TOK_NONE;
-	(*msg).nParams = 0;
-	for (i = 0; i<TOK_MaxParams; i++)
-		(*msg).nData[i] = 0;
+  // Initialize message
+  //
+  (*msg).tok = TOK_NONE;
+  (*msg).nParams = 0;
+  for (i = 0; i<TOK_MaxParams; i++)
+    (*msg).nData[i] = 0;
 
-	// Read bytes, if any, from host and process ...
-	//
-	while ((*cmdStream).available()) {
-		ch = (*cmdStream).read();
+  // Read bytes, if any, from host and process ...
+  //
+  while ((*cmdStream).available()) {
+    ch = (*cmdStream).read();
 
-		if (ch == chStartHost) {
-			// Start of message found, read more data until message end character 
-			// is detected or a time-out occurs ...
-			//
-			nBuf = 0;
-			nBuf = (*cmdStream).readBytesUntil(MSG_EndChr, Buf, MSG_MaxInLen);
-			isMsgComplete = (nBuf >= MSG_MinInLen) && (nBuf < MSG_MaxInLen);
-			if (isMsgComplete) {
-				// Success
-				// 
-				Buf[nBuf++] = 0;
-			}
-			break;
-		}
-	}
-	if (isMsgComplete) {
-		// Identify token ...
-		//
-		(*msg).tok = TOK_NONE;
-		ch = Buf[TOK_StrLength];
-		Buf[TOK_StrLength] = 0;
-		for (j = 0; j <= TOK_LastIndex; j++) {
-			if (strcasecmp(msgTokens[j], Buf) == 0) {
-				(*msg).tok = j;
-				break;
-			}
-		}
-		Buf[TOK_StrLength] = ch;
-		if ((*msg).tok == TOK_NONE) {
-			// Token could not be identified, discard message ...
-			//
-			sendConfirmMsg(TOK_NONE, ERR_CmdNotRecognized, 0);
-		}
-		else {
-			// Check if the message contains parameter
-			//
-			strupr(Buf);
-			if (nBuf >= (TOK_StrLength + TOK_MinParamStrLength + 1)) {
-				// Parse message parameters ...
-				//
-				pBuf = &Buf[TOK_StrLength + 1];
-				pTok = strtok_r(pBuf, MSG_SpacerChr, &pCh);
+    if (ch == chStartHost) {
+      // Start of message found, read more data until message end character 
+      // is detected or a time-out occurs ...
+      //
+      nBuf = 0;
+      nBuf = (*cmdStream).readBytesUntil(MSG_EndChr, Buf, MSG_MaxInLen);
+      isMsgComplete = (nBuf >= MSG_MinInLen) && (nBuf < MSG_MaxInLen);
+      if (isMsgComplete) {
+        // Success
+        // 
+        Buf[nBuf++] = 0;
+      }
+      break;
+    }
+  }
+  if (isMsgComplete) {
+    // Identify token ...
+    //
+    (*msg).tok = TOK_NONE;
+    ch = Buf[TOK_StrLength];
+    Buf[TOK_StrLength] = 0;
+    for (j = 0; j <= TOK_LastIndex; j++) {
+      if (strcasecmp(msgTokens[j], Buf) == 0) {
+        (*msg).tok = j;
+        break;
+      }
+    }
+    Buf[TOK_StrLength] = ch;
+    if ((*msg).tok == TOK_NONE) {
+      // Token could not be identified, discard message ...
+      //
+      sendConfirmMsg(TOK_NONE, ERR_CmdNotRecognized, 0);
+    }
+    else {
+      // Check if the message contains parameter
+      //
+      strupr(Buf);
+      if (nBuf >= (TOK_StrLength + TOK_MinParamStrLength + 1)) {
+        // Parse message parameters ...
+        //
+        pBuf = &Buf[TOK_StrLength + 1];
+        pTok = strtok_r(pBuf, MSG_SpacerChr, &pCh);
 
-				while (pTok != NULL) {
-					if (strlen(pTok) >= TOK_MinParamStrLength) {
-						// String of sufficient length for parameter found
-						//
-						(*msg).paramCh[(*msg).nParams] = pTok[0];
-						switch (pTok[1]) {
-						case MSG_DecFormatChr:
-							// Parse comma separated decimal parameters ...
-							//
-							pTok += 2;
-							convRes = 0;
-							do {
-								i = (*msg).nData[(*msg).nParams];
-								(*msg).data[(*msg).nParams][i] = strtol(pTok, &pErrCh, 10);
-								if (pErrCh == pTok) {
-									// Nothing to convert, abort ...
-									// 
-									convRes = -1;
-								}
-								else {
-									// Conversion was successful
-									//
-									(*msg).nData[(*msg).nParams]++;
-									if ((*msg).nData[(*msg).nParams] == TOK_MaxData)
-										break;
+        while (pTok != NULL) {
+          if (strlen(pTok) >= TOK_MinParamStrLength) {
+            // String of sufficient length for parameter found
+            //
+            (*msg).paramCh[(*msg).nParams] = pTok[0];
+            switch (pTok[1]) {
+            case MSG_DecFormatChr:
+              // Parse comma separated decimal parameters ...
+              //
+              pTok += 2;
+              convRes = 0;
+              do {
+                i = (*msg).nData[(*msg).nParams];
+                (*msg).data[(*msg).nParams][i] = strtol(pTok, &pErrCh, 10);
+                if (pErrCh == pTok) {
+                  // Nothing to convert, abort ...
+                  // 
+                  convRes = -1;
+                }
+                else {
+                  // Conversion was successful
+                  //
+                  (*msg).nData[(*msg).nParams]++;
+                  if ((*msg).nData[(*msg).nParams] == TOK_MaxData)
+                    break;
 
-									// Check whether more data entries are in the list or not
-									//
-									if (*pErrCh == 0)
-										convRes = 1;
-									else {
-										pTok = pErrCh + 1;
-									}
-								}
-							} while (convRes == 0);
-							break;
+                  // Check whether more data entries are in the list or not
+                  //
+                  if (*pErrCh == 0)
+                    convRes = 1;
+                  else {
+                    pTok = pErrCh + 1;
+                  }
+                }
+              } while (convRes == 0);
+              break;
 
-						case MSG_WordFormatChr:
-						case MSG_ByteFormatChr:
-							//***************
-							//**** TODO *****
-							//***************
-							break;
-						}
-						(*msg).nParams++;
-					}
-					if ((*msg).nParams == TOK_MaxParams)
-						pTok = NULL;
-					else
-						pTok = strtok_r(NULL, MSG_SpacerChr, &pCh);
-				}
-			}
-		}
-	}
-	return (*msg).tok;
+            case MSG_WordFormatChr:
+            case MSG_ByteFormatChr:
+              //***************
+              //**** TODO *****
+              //***************
+              break;
+            }
+            (*msg).nParams++;
+          }
+          if ((*msg).nParams == TOK_MaxParams)
+            pTok = NULL;
+          else
+            pTok = strtok_r(NULL, MSG_SpacerChr, &pCh);
+        }
+      }
+    }
+  }
+  return (*msg).tok;
 }
 
 char* RMsgClass::getPtrToInBuf()
 {
-	return Buf;
+  return Buf;
 }
 
 //--------------------------------------------------------------------------------
@@ -427,54 +427,36 @@ bool  RMsgClass::checkMsg (Msg_t* msg, bool asCmd)
   bool res = false;
   char ch;
   
-	switch ((*msg).tok) {
-		case TOK_REM:
-		case TOK_NONE:
-                case TOK_I2W:
-			res = (((*msg).nParams == 3) &&
-			       ((*msg).paramCh[0] == 'A') && 
-			       ((*msg).paramCh[1] == 'B') &&
-			       ((*msg).paramCh[2] == 'W') &&
-			       ((*msg).nData[0] > 0) &&
-			       ((*msg).nData[1] > 0) &&
-			       ((*msg).nData[2] > 0));
-			break;
-		case TOK_I2R:
-			res = (((*msg).nParams == 3) &&
-			       ((*msg).paramCh[0] == 'A') && 
-			       ((*msg).paramCh[1] == 'B') &&
-			       ((*msg).paramCh[2] == 'W') &&
-			       ((*msg).nData[0] > 0) &&
-			       ((*msg).nData[1] > 0) &&
-			       ((*msg).nData[2] > 0));
-			break;
-		case TOK_STA:
-			res = ((*msg).nParams == 0);
-			break;
+  switch ((*msg).tok) {
+    case TOK_REM:
+    case TOK_NONE:
+    case TOK_STA:
+      res = ((*msg).nParams == 0);
+      break;
 
-		case TOK_DUM:
-			res = true;
-			break;
+    case TOK_DUM:
+      res = true;
+      break;
 
-		case TOK_VER:
-			if (asCmd)
-				res = ((*msg).nParams == 0);
-			else
-				res = (((*msg).nParams == 2) &&
-							((*msg).paramCh[0] == 'V') && ((*msg).paramCh[1] == 'M') &&
-							((*msg).nData[0] == 1) && ((*msg).nData[1] == 1));
-			break;
+    case TOK_VER:
+      if (asCmd)
+        res = ((*msg).nParams == 0);
+      else
+        res = (((*msg).nParams == 2) &&
+              ((*msg).paramCh[0] == 'V') && ((*msg).paramCh[1] == 'M') &&
+              ((*msg).nData[0] == 1) && ((*msg).nData[1] == 1));
+      break;
 
-		case TOK_ERR:
-		  res = (((*msg).nParams == 2) &&
-						((*msg).paramCh[0] == 'C') && ((*msg).nData[0] == 1) &&
-						((*msg).paramCh[1] == 'E') && ((*msg).nData[1] == 2));
-		  break;
+    case TOK_ERR:
+      res = (((*msg).nParams == 2) &&
+            ((*msg).paramCh[0] == 'C') && ((*msg).nData[0] == 1) &&
+            ((*msg).paramCh[1] == 'E') && ((*msg).nData[1] == 2));
+      break;
 
-		case TOK_ACK:
-			res = (((*msg).nParams == 1) &&
-						((*msg).paramCh[0] == 'C') && ((*msg).nData[0] == 1));
-			break;
+    case TOK_ACK:
+      res = (((*msg).nParams == 1) &&
+            ((*msg).paramCh[0] == 'C') && ((*msg).nData[0] == 1));
+      break;
   }
   return res;
 }  

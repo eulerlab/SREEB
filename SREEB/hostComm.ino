@@ -26,16 +26,6 @@ void COM_init ()
   delay(100);
 }
 
-//-------------------------------------------------------------------------------
-
-void I2C_init()
-{
-  //initialize I2C comm.
-
-  Wire.begin();
-  delay(100);
-}
-
 /*--------------------------------------------------------------------------------
   Check message syntax (hardware-specific tokens)
   --------------------------------------------------------------------------------*/
@@ -50,25 +40,6 @@ bool  COM_checkMsg (Msg_t* msg, bool asCmd)
     return true;
 
   switch ((*msg).tok) {
-    case TOK_I2W :
-      //Serial.println((*msg).data);
-      res = (((*msg).nParams == 3) &&
-             ((*msg).paramCh[0] == 'A') &&
-             ((*msg).paramCh[1] == 'B') &&
-             ((*msg).paramCh[2] == 'W') &&
-             ((*msg).nData[0] > 0) &&
-             ((*msg).nData[1] > 0) &&
-             ((*msg).nData[2] > 0)); 
-             break;
-    case TOK_I2R :    
-          res = (((*msg).nParams == 3) &&
-             ((*msg).paramCh[0] == 'A') &&
-             ((*msg).paramCh[1] == 'B') &&
-             ((*msg).paramCh[2] == 'W') &&
-             ((*msg).nData[0] > 0) &&
-             ((*msg).nData[1] > 0) &&
-             ((*msg).nData[2] > 0)); 
-             break;
     case TOK_SDM :
     case TOK_SDV :
       res = (((*msg).nParams == 2) && 
@@ -93,8 +64,8 @@ bool  COM_checkMsg (Msg_t* msg, bool asCmd)
     case TOK_CLR :
       res = ((*msg).nParams == 0);    
       break;
-    
-}
+      
+  }
   return res;
 }  
 
@@ -105,12 +76,9 @@ boolean COM_handleMsg (Msg_t* msg)
 // Handles some messages, can be called by the main loop to deal with standard
 // messages. The result reflects if the message was not/could not be handled.
 {
-  boolean res     = true;
-  boolean replied = false;
-  byte    nErrs   = 0;
+  boolean res   = true;
+  byte    nErrs = 0;
   int     p1, p2, p3, pin, mode, j, val;
-  int     dataOut[2];
-
   
   switch ((*msg).tok) {
     case TOK_REM :
@@ -122,6 +90,7 @@ boolean COM_handleMsg (Msg_t* msg)
     case TOK_VER :
       RMsg.sendVerMsg(ModuleVer, getFreeSRAM());
       return res;
+
     case TOK_SDM :
       // Define I/O mode of up to 8 digital pins (=servo ports of the 
       // Watterott Robot Controller). 
@@ -241,28 +210,7 @@ boolean COM_handleMsg (Msg_t* msg)
           digitalWrite(RobotCS.getArduinoPin(p3), val);
       }
       break;
-      
-    case TOK_I2W :        
-      Wire.beginTransmission((*msg).data[0][0]);
-      Wire.write((*msg).data[1][0]);
-      Wire.endTransmission();
-      delay((*msg).data[2][0]);
-      break; 
-        
-    case TOK_I2R : 
-      Wire.requestFrom((*msg).data[0][0], (*msg).data[1][0]);
-      while (Wire.available()==0){}
-      for (j=0;j<(*msg).data[1][0];j+=1){
-        dataOut[j] = Wire.read();
-        Serial.println(dataOut[j], HEX);
-      }
-      RMsg.beginMsg(TOK_I2R);
-      RMsg.appendDataToMsg("D", MSG_DecFormatChr, 2, dataOut);
-      RMsg.sendMsg();
-      delay((*msg).data[2][0]);
-      replied = true;
-      break;
-        
+
     case TOK_CLR :
       // Clear all function entries
       // >CLR
@@ -278,8 +226,9 @@ boolean COM_handleMsg (Msg_t* msg)
   }
   if(nErrs > 0)
     RMsg.sendConfirmMsg((*msg).tok, ERR_AtLeastOneInvalidParam, nErrs);
-  if(!replied)
+  else {
     RMsg.sendConfirmMsg((*msg).tok, ERR_None, 0);      
+  }
   return res; 
 }  
 
